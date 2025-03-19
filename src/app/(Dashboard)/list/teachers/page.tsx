@@ -1,3 +1,4 @@
+"use server";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
@@ -5,7 +6,7 @@ import TableSearch from "@/components/TableSearch";
 import { role, teachersData } from "@/lib/data";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Class, Subject, Teacher } from "@prisma/client";
+import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -106,21 +107,51 @@ const renderRow = (item: TeacherList) => (
 async function TeacherListPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | undefined };
 }) {
   const { page, ...queryParams } = searchParams;
 
   const p = page ? Number(page) : 1;
 
-  const teacher = await prisma.teacher.findMany({
-    include: {
-      subjects: true,
-      classes: true,
-    },
-    take: ITEM_PER_PAGE,
-    skip: ITEM_PER_PAGE * (p - 1), //pagination
-  });
-  const count = await prisma.teacher.count();
+  const query: Prisma.TeacherWhereInput = {};
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "classId":
+            query.lessons = {
+              some: {
+                classId: parseInt(value),
+              },
+            };
+            break;
+          case "search":
+            query.name = { contains: value, mode: "insensitive" };
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  const [teacher, count] = await prisma.$transaction([
+    prisma.teacher.findMany({
+      where: { ...query },
+      // lessons: {
+      //   some: { classId: parseInt(queryParams.classId!) },
+      // },
+      // },
+      include: {
+        subjects: true,
+        classes: true,
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1), //pagination
+    }),
+    prisma.teacher.count({ where: { ...query } }),
+  ]);
 
   console.log(searchParams);
   console.log(teacher);
