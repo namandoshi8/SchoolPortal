@@ -8,8 +8,14 @@ import { useState } from "react";
 
 const localizer = momentLocalizer(moment);
 
-function BigCalendar() {
+function BigCalendar({
+  data,
+}: {
+  data: { title: string; start: Date; end: Date }[];
+}) {
   const [view, setView] = useState<View>(Views.WORK_WEEK);
+
+  console.log(data);
 
   const handleOnChangeView = (selectedView: View) => {
     setView(selectedView);
@@ -18,7 +24,7 @@ function BigCalendar() {
   return (
     <Calendar
       localizer={localizer}
-      events={calendarEvents}
+      events={data}
       startAccessor="start"
       endAccessor="end"
       views={["work_week", "day"]}

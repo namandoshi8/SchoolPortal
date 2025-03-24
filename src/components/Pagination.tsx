@@ -1,4 +1,5 @@
 "use client";
+
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { useRouter } from "next/navigation";
 
@@ -13,6 +14,7 @@ function Pagination({ page, count }: { page: number; count: number }) {
     params.set("page", newPage.toString());
     router.push(`${window.location.pathname}?${params}`);
   }
+
   return (
     <div className="p-4 flex items-center justify-between text-gray-500">
       <button
