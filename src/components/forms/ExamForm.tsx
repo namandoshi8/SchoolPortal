@@ -20,7 +20,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-const ExamForm = ({
+function ExamForm({
   type,
   data,
   setOpen,
@@ -30,7 +30,7 @@ const ExamForm = ({
   data?: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
-}) => {
+})  {
   const {
     register,
     handleSubmit,

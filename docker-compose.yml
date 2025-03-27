@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  postgress:
+    image: postgres:17
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: naman
+      POSTGRES_PASSWORD: nannu123
+      POSTGRES_DB: school
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: schooldashboard_nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL: postgresql://naman:nannu123@localhost:5433/school
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

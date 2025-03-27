@@ -20,7 +20,7 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-const ClassForm = ({
+function ClassForm({
   type,
   data,
   setOpen,
@@ -30,7 +30,7 @@ const ClassForm = ({
   data?: any;
   setOpen: Dispatch<SetStateAction<boolean>>;
   relatedData?: any;
-}) => {
+}) {
   const {
     register,
     handleSubmit,
@@ -154,6 +154,6 @@ const ClassForm = ({
       </button>
     </form>
   );
-};
+}
 
 export default ClassForm;
